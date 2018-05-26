@@ -7,20 +7,27 @@ public class Player : NetworkBehaviour
 {
     public int speed;
     public int _jumpForce;
-    public Rigidbody rb;
     public bool piso;
     public bool estacoosa;
-
+    public Rigidbody rb;
+    public GameObject playerCamera;
+    
     [SyncVar]
     int life;
 
-    void Start() {
+    void Start()
+    {
         if (!hasAuthority)
+        {
             enabled = false;
+            playerCamera.SetActive(false);
+        }
+
         rb = GetComponent<Rigidbody>();
     }
 
-    void Update() {
+    void Update()
+    {
         float moveHorizontal = Input.GetAxis("Horizontal");
         Vector3 movement = new Vector3(moveHorizontal, 0.0f);
         rb.AddForce(movement * speed);
@@ -33,7 +40,8 @@ public class Player : NetworkBehaviour
     }
 
     [Command]
-    void CmdJump() {
+    void CmdJump()
+    {
         rb.AddForce(Vector3.up * _jumpForce);
         estacoosa = true;
 
