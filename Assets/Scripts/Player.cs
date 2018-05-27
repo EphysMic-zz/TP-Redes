@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 public class Player : NetworkBehaviour
 {
@@ -10,18 +11,16 @@ public class Player : NetworkBehaviour
     public bool piso;
     public bool estacoosa;
     public Rigidbody rb;
-    public GameObject playerCamera;
-    
+
     [SyncVar]
-    int life;
+    public int life;
+    [SyncVar]
+    public int ammountOfLifes;
 
     void Start()
     {
         if (!hasAuthority)
-        {
             enabled = false;
-            playerCamera.SetActive(false);
-        }
 
         rb = GetComponent<Rigidbody>();
     }
@@ -34,13 +33,20 @@ public class Player : NetworkBehaviour
 
         if (Input.GetButton("Jump") && !estacoosa)
         {
-            CmdJump();
+            Jump();
             piso = false;
         }
+
+     /*   if (ammountOfLifes <= 0)
+        {
+            SceneManager.LoadScene("GameOver");    
+            //no destruye   
+            NetworkServer.Destroy(gameObject);
+        }*/
+
     }
 
-    [Command]
-    void CmdJump()
+    void Jump()
     {
         rb.AddForce(Vector3.up * _jumpForce);
         estacoosa = true;
@@ -56,5 +62,23 @@ public class Player : NetworkBehaviour
             piso = true;
             estacoosa = false;
         }
+    }
+
+    [ClientRpc]
+    public void RpcDealDamage(int dmg)
+    {
+        life -= dmg;
+        if (life <= 0 && ammountOfLifes >= 1)
+        {
+            transform.position = Vector3.zero;
+            life = 100;
+            ammountOfLifes--;
+        }
+    }
+
+    private void OnTriggerStay(Collider c)
+    {
+        if (c.gameObject.layer == LayerMask.NameToLayer("Line"))
+            RpcDealDamage(2);
     }
 }
