@@ -11,6 +11,8 @@ public class Player : NetworkBehaviour
     public bool piso;
     public bool estacoosa;
     public Rigidbody rb;
+    public PlayerManager pm;
+    public PlayerUI pUI;
 
     [SyncVar]
     public int life;
@@ -23,6 +25,9 @@ public class Player : NetworkBehaviour
             enabled = false;
 
         rb = GetComponent<Rigidbody>();
+        pm = FindObjectOfType<PlayerManager>();
+        pm.AddPlayer(this);        //Entonces cada vez que le hacen daño haces un repaint(pui.repaint(life))
+
     }
 
     void Update()
