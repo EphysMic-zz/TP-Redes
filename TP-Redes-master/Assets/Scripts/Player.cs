@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Player : NetworkBehaviour
 {
@@ -13,7 +14,11 @@ public class Player : NetworkBehaviour
     public Rigidbody rb;
     public PlayerManager pm;
     public PlayerUI pUI;
-
+    public bool entered;
+    public Toggle entToggle;
+    public bool ready;
+    public Toggle readToggle;
+    public Canvas canvas;
     [SyncVar]
     public int life;
     [SyncVar]
@@ -21,17 +26,20 @@ public class Player : NetworkBehaviour
 
     void Start()
     {
+
         if (!hasAuthority)
             enabled = false;
 
         rb = GetComponent<Rigidbody>();
         pm = FindObjectOfType<PlayerManager>();
-        pm.AddPlayer(this);        //Entonces cada vez que le hacen daño haces un repaint(pui.repaint(life))
 
     }
 
     void Update()
     {
+        if ( pm.match ) {
+            DisableUI();
+        }
         float moveHorizontal = Input.GetAxis("Horizontal");
         Vector3 movement = new Vector3(moveHorizontal, 0.0f);
         rb.AddForce(movement * speed);
@@ -86,4 +94,11 @@ public class Player : NetworkBehaviour
         if (c.gameObject.layer == LayerMask.NameToLayer("Line"))
             RpcDealDamage(2);
     }
+public void AddToQueue() {
+        pm.AddPlayer(this);
 }
+    public void DisableUI() {
+        canvas.enabled = false;
+    }
+}
+

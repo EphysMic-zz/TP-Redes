@@ -10,6 +10,7 @@ public class StartMenu : MonoBehaviour {
     public Toggle matchToggle;
 	// Use this for initialization
 	void Start () {
+        playerManager = FindObjectOfType<PlayerManager>();  
         match = playerManager.match;
         matchToggle.isOn = match;
     }
@@ -17,14 +18,6 @@ public class StartMenu : MonoBehaviour {
     {
         if (!match)
         {
-            if(playerManager.peoples < 4)
-            {
-                Player.
-            }
-            else
-            {
-                print ("No hay espacio")
-            }
         }
         else
         {
