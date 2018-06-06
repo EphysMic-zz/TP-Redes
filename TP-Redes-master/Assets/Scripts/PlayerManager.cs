@@ -4,10 +4,11 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 public class PlayerManager : NetworkBehaviour {
-    //[SyncVar]
-    public List<Player> players = new List<Player>();
+    //Agregar por instanceid y de ahi hacer el get, o algo asi xd 
     //[SyncVar]
     public List<PlayerUI> uIs = new List<PlayerUI>();
+
+
     [SyncVar]
     public int peoples;
     [SyncVar]
@@ -20,41 +21,26 @@ public class PlayerManager : NetworkBehaviour {
 
     // Update is called once per frame
     void Update() {
-        int readys = 0;
-        if (peoples > 1 ) {
-            foreach ( var player in players ) {
-                player.readToggle.interactable = true;
-                if (player.ready == true ) {
-                    readys++;
-                }else if (player.ready == false ) {
-                    readys--;
-                }
-            }
-            if (readys == peoples ) {
-                match = true;
-            }
-        } else {
-            foreach ( var player in players ) {
-                player.readToggle.interactable = false;
-            }
+        if (peoples == NetworkServer.connections.Count && peoples > 1)
+        {
+            match = true;
         }
-
     }
-
     public void AddPlayer( Player player ) {
-                        print("HEY");
+        //No agrega otra people
         
         if ( !match) {
             if ( peoples < 4 ) {
                 foreach ( var ui in uIs ) {
+                        print("HEY");
                     if ( ui.asigned == false ) {
 
-                        players.Add(player);
+                        peoples++;
                         player.pUI = ui;
-                        player.pUI.AsignUI("Player " + players.Count, player.life);
+                        player.pUI.AsignUI("Player " + peoples , player.life);
                         player.entered = true;
                         player.entToggle.isOn = true;
-                        peoples++;
+                        return;     //No borrar
                     }
                 }
             }

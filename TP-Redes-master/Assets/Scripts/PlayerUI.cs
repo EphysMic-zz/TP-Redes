@@ -5,11 +5,14 @@ using UnityEngine.UI;
 using UnityEngine.Networking;
 
 public class PlayerUI : NetworkBehaviour{
+    [SyncVar]
     public string playerName;
     [SyncVar]
     public int lifeValue;
 
     public bool asigned;
+    //[SyncVar]
+
     public Text uiname;
     public Text life;
 

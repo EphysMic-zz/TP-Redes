@@ -12,7 +12,7 @@ public class Player : NetworkBehaviour
     public bool piso;
     public bool estacoosa;
     public Rigidbody rb;
-    public PlayerManager pm;
+    public PlayerManager playerMng;
     public PlayerUI pUI;
     public bool entered;
     public Toggle entToggle;
@@ -24,6 +24,11 @@ public class Player : NetworkBehaviour
     [SyncVar]
     public int ammountOfLifes;
 
+    public void Awake()
+    {
+        playerMng = FindObjectOfType<PlayerManager>();
+        
+    }
     void Start()
     {
 
@@ -31,13 +36,11 @@ public class Player : NetworkBehaviour
             enabled = false;
 
         rb = GetComponent<Rigidbody>();
-        pm = FindObjectOfType<PlayerManager>();
-
     }
 
     void Update()
     {
-        if ( pm.match ) {
+        if ( playerMng.match ) {
             DisableUI();
         }
         float moveHorizontal = Input.GetAxis("Horizontal");
@@ -95,7 +98,11 @@ public class Player : NetworkBehaviour
             RpcDealDamage(2);
     }
 public void AddToQueue() {
-        pm.AddPlayer(this);
+        if (!entered)
+        {
+        playerMng.AddPlayer(this);
+            entered = true;
+        }
 }
     public void DisableUI() {
         canvas.enabled = false;
