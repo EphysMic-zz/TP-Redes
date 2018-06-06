@@ -19,9 +19,9 @@ public class PlayerManager : NetworkBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if ( peoples == NetworkServer.connections.Count && peoples > 1 ) {
+        //networkserverconections da cero
+        if ( peoples > 1 ) {
             match = true;
-            print(NetworkServer.connections.Count);
         }
     }
     public void AddPlayer( Player player ) {
