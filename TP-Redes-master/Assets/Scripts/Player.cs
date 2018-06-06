@@ -25,12 +25,10 @@ public class Player : NetworkBehaviour
 
     public void Awake()
     {
-        playerMng = FindObjectOfType<PlayerManager>();
-        
+        playerMng = FindObjectOfType<PlayerManager>();        
     }
     void Start()
     {
-
         rb = GetComponent<Rigidbody>();
     }
 
@@ -41,9 +39,8 @@ public class Player : NetworkBehaviour
         }
 
         if ( !isLocalPlayer ) {
-            enabled=false;
+            return;
         }
-         
         //Inputs
         float moveHorizontal = Input.GetAxis("Horizontal");
         Vector3 movement = new Vector3(moveHorizontal, 0.0f);
@@ -54,14 +51,6 @@ public class Player : NetworkBehaviour
             Jump();
             piso = false;
         }
-
-     /*   if (ammountOfLifes <= 0)
-        {
-            SceneManager.LoadScene("GameOver");    
-            //no destruye   
-            NetworkServer.Destroy(gameObject);
-        }*/
-
     }
 
     void Jump()
@@ -83,23 +72,18 @@ public class Player : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcDealDamage(int dmg)
+    public void RpcDealDamage()
     {
-        life -= dmg;
-        if (life <= 0 && ammountOfLifes >= 1)
-        {
-            transform.position = Vector3.zero;
-            life = 100;
-            ammountOfLifes--;
-        }
+        NetworkServer.Destroy(gameObject);
     }
 
-    private void OnTriggerStay(Collider c)
+    private void OnTriggerExit(Collider c)
     {
         if (c.gameObject.layer == LayerMask.NameToLayer("Line"))
-            RpcDealDamage(2);
+            RpcDealDamage();
     }
-public void AddToQueue() {
+
+    public void AddToQueue() {
         if (!entered)
         {
         playerMng.AddPlayer(this);

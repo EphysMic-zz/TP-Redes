@@ -673,7 +673,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 120
-  _jumpForce: 200
+  _jumpForce: 150
   piso: 0
   estacoosa: 0
   rb: {fileID: 0}
