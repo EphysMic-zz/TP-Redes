@@ -13,11 +13,10 @@ public class Player : NetworkBehaviour
     public bool estacoosa;
     public Rigidbody rb;
     public PlayerManager playerMng;
-    public PlayerUI pUI;
+    [SyncVar]
     public bool entered;
     public Toggle entToggle;
     public bool ready;
-    public Toggle readToggle;
     public Canvas canvas;
     [SyncVar]
     public int life;
@@ -31,9 +30,6 @@ public class Player : NetworkBehaviour
     }
     void Start()
     {
-
-        if (!hasAuthority)
-            enabled = false;
 
         rb = GetComponent<Rigidbody>();
     }
