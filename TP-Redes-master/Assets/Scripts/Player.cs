@@ -40,7 +40,7 @@ public class Player : NetworkBehaviour
             DisableUI();
         }
 
-        if ( !hasAuthority ) {
+        if ( !isLocalPlayer ) {
             enabled=false;
         }
          
