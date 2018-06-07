@@ -20,6 +20,9 @@ public class Player : NetworkBehaviour {
     [SyncVar]
     public float force;
 
+    public string type;
+    public Winner winner;
+
     public void Awake() {
         playerMng = FindObjectOfType<PlayerManager>();
         if ( hasAuthority ) {
@@ -34,6 +37,15 @@ public class Player : NetworkBehaviour {
 
         matchToggle.isOn = playerMng.match;
         rb = GetComponent<Rigidbody>();
+        winner = GameObject.Find("winner").GetComponent<Winner>();
+
+        if ( !isLocalPlayer ) {
+            if ( isServer )
+                type = "server";
+            if ( isClient )
+                type = "client";
+        }
+
     }
 
     void Update() {
@@ -75,7 +87,8 @@ public class Player : NetworkBehaviour {
         playerMng.peoples--;
 
         if ( playerMng.match && playerMng.peoples == 1 ) {
-            //Cambiodeescena
+            //Cambiodeescena.
+            winner.RpcWin(type);
         }
     }
 
@@ -120,5 +133,11 @@ public class Player : NetworkBehaviour {
         canvas.enabled = true;
     }
 
+    public override void OnStartLocalPlayer() {
+        if ( isClient )
+            type = "client";
+        if ( isServer )
+            type = "server";
+    }
 
 }
