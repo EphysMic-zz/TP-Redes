@@ -14,19 +14,5 @@ public class StartMenu : MonoBehaviour {
         match = playerManager.match;
         matchToggle.isOn = match;*/
     }
-    public void AddToQueue()
-    {
-        if (!match)
-        {
-        }
-        else
-        {
-            print("Jeugo en progreso");
-        }
-    }
-    public void Launch()
-    {
-        
-    }
-	
+    
 }

@@ -5,13 +5,11 @@ using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class Player : NetworkBehaviour
-{
+public class Player : NetworkBehaviour {
     public int speed;
     public int _jumpForce;
     public bool piso;
     public bool estacoosa;
-    public bool canPlay;
     public Rigidbody rb;
     public PlayerManager playerMng;
     [SyncVar]
@@ -24,108 +22,103 @@ public class Player : NetworkBehaviour
 
     public void Awake() {
         playerMng = FindObjectOfType<PlayerManager>();
-        matchToggle.isOn = playerMng.match;
-    }
-    void Start()
-    {
+        if ( hasAuthority ) {
+            EnableUI();
+            print("HEY;");
+            //enabled = false;
+        }else {
 
+        }
+    }
+    void Start() {
+
+        matchToggle.isOn = playerMng.match;
         rb = GetComponent<Rigidbody>();
     }
 
-    void Update()
-    {
-             if ( playerMng.match && entered ) {
-                 DisableUI();
-             }
+    void Update() {
+        if ( playerMng.match && entered ) {
+            DisableUI();
+        }
 
-        //no lo toques porque deja de sincronizar
-        if (!isLocalPlayer)
-        {
+        if ( !isLocalPlayer ) {
             //enabled = false;
+            DisableUI();
             return;
         }
 
         //  print(NetworkServer.connections.Count);
-        if (NetworkServer.connections.Count >= 2)
-            canPlay = true;
+        if ( playerMng.match && entered ) {
+            float moveHorizontal = Input.GetAxis("Horizontal");
+            Vector3 movement = new Vector3(moveHorizontal, 0.0f);
+            rb.AddForce(movement * speed);
 
-        if (playerMng.match && entered)
-          {
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f);
-        rb.AddForce(movement * speed);
-
-        if (Input.GetButton("Jump") && !estacoosa)
-        {
-            Jump();
-            piso = false;
+            if ( Input.GetButton("Jump") && !estacoosa ) {
+                Jump();
+                piso = false;
+            }
         }
-         }       
     }
 
-    void Jump()
-    {
+    void Jump() {
         rb.AddForce(Vector3.up * _jumpForce);
         estacoosa = true;
 
-        if (piso)
+        if ( piso )
             piso = false;
     }
 
     [ClientRpc]
-    public void RpcDealDamage()
-    {
+    public void RpcDealDamage() {
         //NetworkServer.Destroy(gameObject);
 
         playerMng.peoples--;
 
-        if (playerMng.match && playerMng.peoples == 1 ) {
+        if ( playerMng.match && playerMng.peoples == 1 ) {
             //Cambiodeescena
         }
     }
 
     [ClientRpc]
-    void RpcPw()
-    {
+    void RpcPw() {
         force = 50;
     }
 
     [Command]
-    void CmdHit()
-    {
+    void CmdHit() {
         rb.AddExplosionForce(force, transform.position, 5, 0f, ForceMode.Impulse);
     }
 
-    private void OnTriggerExit(Collider c)
-    {
-        if (c.gameObject.layer == LayerMask.NameToLayer("Line"))
+    private void OnTriggerExit( Collider c ) {
+        if ( c.gameObject.layer == LayerMask.NameToLayer("Line") )
             RpcDealDamage();
     }
 
-    private void OnCollisionEnter(Collision c)
-    {
-        if (c.gameObject.layer == LayerMask.NameToLayer("Level") && !piso)
-        {
+    private void OnCollisionEnter( Collision c ) {
+        if ( c.gameObject.layer == LayerMask.NameToLayer("Level") && !piso ) {
             piso = true;
             estacoosa = false;
         }
 
-        if (c.gameObject.layer == LayerMask.NameToLayer("powerUp"))
+        if ( c.gameObject.layer == LayerMask.NameToLayer("powerUp") )
             RpcPw();
-        if (c.gameObject.layer == LayerMask.NameToLayer("pj"))
+        if ( c.gameObject.layer == LayerMask.NameToLayer("pj") )
             CmdHit();
 
     }
-      public void AddToQueue() {
-           if (!entered && !playerMng.match)
-           {
-           playerMng.AddPlayer(this);
-               entered = true;
-            
-           }
-   }
-       public void DisableUI() {
-           canvas.enabled = false;
-       }
-}
+    public void AddToQueue() {
+        if ( !entered && !playerMng.match ) {
+            playerMng.AddPlayer(this);
+            entered = true;
 
+        }
+    }
+    public void DisableUI() {
+        canvas.enabled = false;
+    }
+    public void EnableUI() {
+        canvas.enabled = true;
+    }
+
+
+}
