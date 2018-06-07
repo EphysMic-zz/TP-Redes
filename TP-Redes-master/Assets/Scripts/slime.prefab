@@ -391,7 +391,37 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+<<<<<<< HEAD
 --- !u!114 &114089062033545448
+=======
+--- !u!114 &114340727701061456
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1899442790464138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e0d29a03315cf94fa06c240d81fc174, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 70
+  _jumpForce: 800
+  piso: 0
+  estacoosa: 0
+  canPlay: 0
+  rb: {fileID: 0}
+  playerMng: {fileID: 0}
+  rend: {fileID: 23328681498357902}
+  red: {fileID: 2100000, guid: 4fe78af6708f2ea449e08079bd630edb, type: 2}
+  violet: {fileID: 2100000, guid: 8e78343953726374f828be4a444f8522, type: 2}
+  entered: 0
+  entToggle: {fileID: 114516387369459670}
+  matchToggle: {fileID: 114686964194876540}
+  canvas: {fileID: 223304618042509750}
+  force: 25
+--- !u!114 &114341338289636208
+>>>>>>> e9a3e04d097c55abb1e1dd77de4a30d0335f98e8
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
