@@ -10,9 +10,9 @@ public class StartMenu : MonoBehaviour {
     public Toggle matchToggle;
 	// Use this for initialization
 	void Start () {
-        playerManager = FindObjectOfType<PlayerManager>();  
+     /*   playerManager = FindObjectOfType<PlayerManager>();  
         match = playerManager.match;
-        matchToggle.isOn = match;
+        matchToggle.isOn = match;*/
     }
     public void AddToQueue()
     {

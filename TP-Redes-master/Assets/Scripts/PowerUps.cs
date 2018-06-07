@@ -1,25 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class PowerUps : MonoBehaviour {
+public class PowerUps : MonoBehaviour
+{
     public GameObject pl;
+    public GameObject spawnPoint;
+    public float timer;
 
-	// Use this for initialization
-	void Start () {
-    }
-
-    // Update is called once per frame
-    void Update () {
-		
-         pl = GameObject.FindGameObjectWithTag("pj");
-	}
-    public void OnTriggerEnter(Collider c)
+    void Update()
     {
-        if(c.gameObject.layer == LayerMask.NameToLayer("pj"))
-        {
+        pl = GameObject.FindGameObjectWithTag("pj");
+
+        timer += Time.deltaTime;
+        if (timer >= 5)
             Destroy(gameObject);
-            //aca todo el coso
-        }
+    }
+    public void OnCollisionEnter(Collision c)
+    {
+        if (c.gameObject.layer == LayerMask.NameToLayer("pj")) Destroy(gameObject);
+
     }
 }

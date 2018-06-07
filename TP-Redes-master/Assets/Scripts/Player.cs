@@ -11,6 +11,7 @@ public class Player : NetworkBehaviour
     public int _jumpForce;
     public bool piso;
     public bool estacoosa;
+    public bool canPlay;
     public Rigidbody rb;
     public PlayerManager playerMng;
     [SyncVar]
@@ -19,13 +20,11 @@ public class Player : NetworkBehaviour
     public bool ready;
     public Canvas canvas;
     [SyncVar]
-    public int life;
-    [SyncVar]
-    public int ammountOfLifes;
+    public float force;
 
     public void Awake()
     {
-        playerMng = FindObjectOfType<PlayerManager>();        
+        //    playerMng = FindObjectOfType<PlayerManager>();        
     }
     void Start()
     {
@@ -34,14 +33,22 @@ public class Player : NetworkBehaviour
 
     void Update()
     {
-        if ( playerMng.match ) {
-            DisableUI();
+        /*     if ( playerMng.match ) {
+                 DisableUI();
+             }*/
+
+        //no lo toques porque deja de sincronizar
+        if (!isLocalPlayer)
+        {
+            enabled = false;
         }
 
-        if ( !isLocalPlayer ) {
-            return;
-        }
-        //Inputs
+        //  print(NetworkServer.connections.Count);
+        if (NetworkServer.connections.Count >= 2)
+            canPlay = true;
+
+        //if (canPlay)
+        //  {
         float moveHorizontal = Input.GetAxis("Horizontal");
         Vector3 movement = new Vector3(moveHorizontal, 0.0f);
         rb.AddForce(movement * speed);
@@ -51,6 +58,7 @@ public class Player : NetworkBehaviour
             Jump();
             piso = false;
         }
+        // }       
     }
 
     void Jump()
@@ -62,19 +70,22 @@ public class Player : NetworkBehaviour
             piso = false;
     }
 
-    private void OnCollisionEnter(Collision c)
-    {
-        if (c.gameObject.layer == LayerMask.NameToLayer("Level") && !piso)
-        {
-            piso = true;
-            estacoosa = false;
-        }
-    }
-
     [ClientRpc]
     public void RpcDealDamage()
     {
         NetworkServer.Destroy(gameObject);
+    }
+
+    [ClientRpc]
+    void RpcPw()
+    {
+        force = 50;
+    }
+
+    [Command]
+    void CmdHit()
+    {
+        rb.AddExplosionForce(force, transform.position, 5, 0f, ForceMode.Impulse);
     }
 
     private void OnTriggerExit(Collider c)
@@ -83,15 +94,29 @@ public class Player : NetworkBehaviour
             RpcDealDamage();
     }
 
-    public void AddToQueue() {
-        if (!entered)
+    private void OnCollisionEnter(Collision c)
+    {
+        if (c.gameObject.layer == LayerMask.NameToLayer("Level") && !piso)
         {
-        playerMng.AddPlayer(this);
-            entered = true;
+            piso = true;
+            estacoosa = false;
         }
-}
-    public void DisableUI() {
-        canvas.enabled = false;
+
+        if (c.gameObject.layer == LayerMask.NameToLayer("powerUp"))
+            RpcPw();
+        if (c.gameObject.layer == LayerMask.NameToLayer("pj"))
+            CmdHit();
+
     }
+    /*   public void AddToQueue() {
+           if (!entered)
+           {
+           playerMng.AddPlayer(this);
+               entered = true;
+           }
+   }
+       public void DisableUI() {
+           canvas.enabled = false;
+       }*/
 }
 
