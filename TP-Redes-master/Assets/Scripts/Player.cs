@@ -75,7 +75,13 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     public void RpcDealDamage()
     {
-        NetworkServer.Destroy(gameObject);
+        //NetworkServer.Destroy(gameObject);
+
+        playerMng.peoples--;
+
+        if (playerMng.match && playerMng.peoples == 1 ) {
+            //Cambiodeescena
+        }
     }
 
     [ClientRpc]
