@@ -37,7 +37,7 @@ public class Player : NetworkBehaviour {
 
         matchToggle.isOn = playerMng.match;
         rb = GetComponent<Rigidbody>();
-        winner = GameObject.Find("winner").GetComponent<Winner>();
+        winner = FindObjectOfType<Winner>();
 
         if ( !isLocalPlayer ) {
             if ( isServer )
