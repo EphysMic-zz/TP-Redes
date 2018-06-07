@@ -19,8 +19,6 @@ public class Player : NetworkBehaviour {
     public Canvas canvas;
     [SyncVar]
     public float force;
-    public string type;
-    public winner winner;
 
     public void Awake() {
         playerMng = FindObjectOfType<PlayerManager>();
@@ -36,16 +34,6 @@ public class Player : NetworkBehaviour {
 
         matchToggle.isOn = playerMng.match;
         rb = GetComponent<Rigidbody>();
-        winner = GameObject.Find("winner").GetComponent<winner>();
-
-        if (!isLocalPlayer)
-        {
-            if (isServer)
-                type = "server";
-            if (isClient)
-                type = "client";
-        }
-
     }
 
     void Update() {
@@ -53,7 +41,6 @@ public class Player : NetworkBehaviour {
             DisableUI();
         }
 
-<<<<<<< HEAD
         if ( !isLocalPlayer ) {
             //enabled = false;
             DisableUI();
@@ -70,27 +57,6 @@ public class Player : NetworkBehaviour {
                 Jump();
                 piso = false;
             }
-=======
-        //no lo toques porque deja de sincronizar
-        if (!isLocalPlayer)
-        {
-            return;
-        }
-
-        if (NetworkServer.connections.Count >= 2)
-            canPlay = true;
-
-        if (playerMng.match && entered)
-          {
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f);
-        rb.AddForce(movement * speed);
-
-        if (Input.GetButton("Jump") && !estacoosa)
-        {
-            Jump();
-            piso = false;
->>>>>>> e9a3e04d097c55abb1e1dd77de4a30d0335f98e8
         }
     }
 
@@ -103,7 +69,6 @@ public class Player : NetworkBehaviour {
     }
 
     [ClientRpc]
-<<<<<<< HEAD
     public void RpcDealDamage() {
         //NetworkServer.Destroy(gameObject);
 
@@ -111,14 +76,6 @@ public class Player : NetworkBehaviour {
 
         if ( playerMng.match && playerMng.peoples == 1 ) {
             //Cambiodeescena
-=======
-    public void RpcDealDamage()
-    {
-        playerMng.peoples--;
-
-        if (playerMng.match && playerMng.peoples == 1 ) {
-            winner.RpcWin(type);      
->>>>>>> e9a3e04d097c55abb1e1dd77de4a30d0335f98e8
         }
     }
 
@@ -149,7 +106,6 @@ public class Player : NetworkBehaviour {
             CmdHit();
 
     }
-<<<<<<< HEAD
     public void AddToQueue() {
         if ( !entered && !playerMng.match ) {
             playerMng.AddPlayer(this);
@@ -164,29 +120,5 @@ public class Player : NetworkBehaviour {
         canvas.enabled = true;
     }
 
-=======
-      public void AddToQueue() {
-           if (!entered && !playerMng.match)
-           {
-           playerMng.AddPlayer(this);
-               entered = true;
-            
-           }
-   }
-       public void DisableUI() {
-           canvas.enabled = false;
-       }
-
-    public override void OnStartLocalPlayer()
-    {
-        if (isClient)
-            type = "client";        
-        if (isServer)
-            type = "server";
-    }
-
-
-}
->>>>>>> e9a3e04d097c55abb1e1dd77de4a30d0335f98e8
 
 }
