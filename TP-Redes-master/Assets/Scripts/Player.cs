@@ -21,6 +21,8 @@ public class Player : NetworkBehaviour
     public Canvas canvas;
     [SyncVar]
     public float force;
+    public string type;
+    public winner winner;
 
     public void Awake() {
         playerMng = FindObjectOfType<PlayerManager>();
@@ -30,6 +32,16 @@ public class Player : NetworkBehaviour
     {
 
         rb = GetComponent<Rigidbody>();
+        winner = GameObject.Find("winner").GetComponent<winner>();
+
+        if (!isLocalPlayer)
+        {
+            if (isServer)
+                type = "server";
+            if (isClient)
+                type = "client";
+        }
+
     }
 
     void Update()
@@ -41,11 +53,9 @@ public class Player : NetworkBehaviour
         //no lo toques porque deja de sincronizar
         if (!isLocalPlayer)
         {
-            //enabled = false;
             return;
         }
 
-        //  print(NetworkServer.connections.Count);
         if (NetworkServer.connections.Count >= 2)
             canPlay = true;
 
@@ -75,12 +85,10 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     public void RpcDealDamage()
     {
-        //NetworkServer.Destroy(gameObject);
-
         playerMng.peoples--;
 
         if (playerMng.match && playerMng.peoples == 1 ) {
-            //Cambiodeescena
+            winner.RpcWin(type);      
         }
     }
 
@@ -127,5 +135,15 @@ public class Player : NetworkBehaviour
        public void DisableUI() {
            canvas.enabled = false;
        }
+
+    public override void OnStartLocalPlayer()
+    {
+        if (isClient)
+            type = "client";        
+        if (isServer)
+            type = "server";
+    }
+
+
 }
 
