@@ -17,38 +17,40 @@ public class Player : NetworkBehaviour
     [SyncVar]
     public bool entered;
     public Toggle entToggle;
-    public bool ready;
+    public Toggle matchToggle;
     public Canvas canvas;
     [SyncVar]
     public float force;
 
-    public void Awake()
-    {
-        //    playerMng = FindObjectOfType<PlayerManager>();        
+    public void Awake() {
+        playerMng = FindObjectOfType<PlayerManager>();
+        matchToggle.isOn = playerMng.match;
     }
     void Start()
     {
+
         rb = GetComponent<Rigidbody>();
     }
 
     void Update()
     {
-        /*     if ( playerMng.match ) {
+             if ( playerMng.match && entered ) {
                  DisableUI();
-             }*/
+             }
 
         //no lo toques porque deja de sincronizar
         if (!isLocalPlayer)
         {
-            enabled = false;
+            //enabled = false;
+            return;
         }
 
         //  print(NetworkServer.connections.Count);
         if (NetworkServer.connections.Count >= 2)
             canPlay = true;
 
-        //if (canPlay)
-        //  {
+        if (playerMng.match && entered)
+          {
         float moveHorizontal = Input.GetAxis("Horizontal");
         Vector3 movement = new Vector3(moveHorizontal, 0.0f);
         rb.AddForce(movement * speed);
@@ -58,7 +60,7 @@ public class Player : NetworkBehaviour
             Jump();
             piso = false;
         }
-        // }       
+         }       
     }
 
     void Jump()
@@ -108,15 +110,16 @@ public class Player : NetworkBehaviour
             CmdHit();
 
     }
-    /*   public void AddToQueue() {
-           if (!entered)
+      public void AddToQueue() {
+           if (!entered && !playerMng.match)
            {
            playerMng.AddPlayer(this);
                entered = true;
+            
            }
    }
        public void DisableUI() {
            canvas.enabled = false;
-       }*/
+       }
 }
 
